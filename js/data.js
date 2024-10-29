@@ -1,4 +1,4 @@
-import {getRandomInteger, getRandomIdFromRange, getRandomArrayElement} from './util';
+import {getRandomInteger, getRandomIdFromRange, getRandomArrayElement} from './util.js';
 
 const MESSAGES = ['Всё отлично!',
   'В целом всё неплохо. Но не всё.',
@@ -6,17 +6,17 @@ const MESSAGES = ['Всё отлично!',
   'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.',
   'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
   'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'];
-
 const NAMES = ['Андрей','Павел','Кирилл','Валерия','Карина','Ульяна','Екатерина'];
 
 const generatePhotoId = getRandomIdFromRange(1, 20);
 
 const createComment = () => ({
-  id: getRandomIdFromRange(1, 6),
+  id: getRandomIdFromRange(1, 10),
   avatar: `img/avatar-${getRandomInteger(1, 6)}.svg`,
   message: getRandomArrayElement(MESSAGES),
   name: getRandomArrayElement(NAMES),
 });
+
 const createPhotoObject = () => {
   const photoID = generatePhotoId();
   return {
@@ -27,7 +27,7 @@ const createPhotoObject = () => {
     comments: Array.from({length: getRandomInteger(0, 30)}, createComment),
   };
 };
-// eslint-disable-next-line no-unused-vars
-const createPhotos = () => Array.from({length: 25}, createPhotoObject);
+
+const createPhotos = () => Array.from({length: 20}, createPhotoObject);
 
 export {createPhotos};
