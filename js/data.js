@@ -9,6 +9,8 @@ const MESSAGES = ['Всё отлично!',
 
 const NAMES = ['Андрей','Павел','Кирилл','Валерия','Карина','Ульяна','Екатерина'];
 
+const generatePhotoId = getRandomIdFromRange(1, 20);
+
 const createComment = () => ({
   id: getRandomIdFromRange(1, 6),
   avatar: `img/avatar-${getRandomInteger(1, 6)}.svg`,
@@ -16,7 +18,7 @@ const createComment = () => ({
   name: getRandomArrayElement(NAMES),
 });
 const createPhotoObject = () => {
-  const photoID = getRandomIdFromRange(1, 25);
+  const photoID = generatePhotoId();
   return {
     id: photoID,
     url: `photos/${photoID}.jpg`,
