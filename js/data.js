@@ -8,17 +8,18 @@ const MESSAGES = ['Всё отлично!',
   'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'];
 const NAMES = ['Андрей','Павел','Кирилл','Валерия','Карина','Ульяна','Екатерина'];
 
-const generatePhotoId = getRandomIdFromRange(1, 20);
+const photosCount = 20;
+const generateId = getRandomIdFromRange(1, photosCount);
 
 const createComment = () => ({
-  id: getRandomIdFromRange(1, 10),
+  id: getRandomIdFromRange(1, 100),
   avatar: `img/avatar-${getRandomInteger(1, 6)}.svg`,
   message: getRandomArrayElement(MESSAGES),
   name: getRandomArrayElement(NAMES),
 });
 
 const createPhotoObject = () => {
-  const photoID = generatePhotoId();
+  const photoID = generateId();
   return {
     id: photoID,
     url: `photos/${photoID}.jpg`,
@@ -28,6 +29,6 @@ const createPhotoObject = () => {
   };
 };
 
-const createPhotos = () => Array.from({length: 20}, createPhotoObject);
+const createPhotos = () => Array.from({length: photosCount}, createPhotoObject);
 
 export {createPhotos};
