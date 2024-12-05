@@ -20,6 +20,12 @@ const getRandomIdFromRange = (min, max) => {
     return currentValue;
   };
 };
+
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
-export {getRandomInteger, getRandomIdFromRange, getRandomArrayElement, isEscapeKey};
+const checkRepeats = (arr) => {
+  const uniqueElements = new Set(arr);
+  return uniqueElements.size < arr.length;
+};
+
+export {getRandomInteger, getRandomIdFromRange, getRandomArrayElement, isEscapeKey, checkRepeats};
