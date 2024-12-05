@@ -23,9 +23,5 @@ const getRandomIdFromRange = (min, max) => {
 
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
-const checkRepeats = (arr) => {
-  const uniqueElements = new Set(arr);
-  return uniqueElements.size < arr.length;
-};
 
 export {getRandomInteger, getRandomIdFromRange, getRandomArrayElement, isEscapeKey, checkRepeats};
