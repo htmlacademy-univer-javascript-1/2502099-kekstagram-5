@@ -1,7 +1,7 @@
 import {isEscapeKey} from './util.js';
 
 const bigPictureElement = document.querySelector('.big-picture');
-const bigPictureCloseElement = bigPictureElement.querySelector('.big-picture__cancel');
+const bigPictureClose = bigPictureElement.querySelector('.big-picture__cancel');
 const bigPictureImage = bigPictureElement.querySelector('.big-picture__img').querySelector('img');
 const bigPictureLikesCount = bigPictureElement.querySelector('.likes-count');
 const bigPictureDescription = bigPictureElement.querySelector('.social__caption');
@@ -79,7 +79,7 @@ const closeBigPicture = () => {
   currentCommentsCount = 0;
 };
 
-bigPictureCloseElement.addEventListener('click', () => {
+bigPictureClose.addEventListener('click', () => {
   closeBigPicture();
 });
 
