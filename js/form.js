@@ -1,4 +1,5 @@
 import { isEscapeKey, checkRepeats } from './util.js';
+import { addEventListenerToScaleElements, removeEventListenerFromScaleElements, addFilter, removeFilter } from './effects.js';
 
 const MAX_LENGTH_COMMENT = 140;
 const MAX_HASHTAGS_COUNT = 5;
@@ -13,6 +14,7 @@ const cancelElement = editingWindowElement.querySelector('.img-upload__cancel');
 const submitElement = uploadForm.querySelector('.img-upload__submit');
 const hashtagsInputElement = uploadForm.querySelector('.text__hashtags');
 const descriptionInputElement = uploadForm.querySelector('.text__description');
+const scaleImageValueElement = uploadForm.querySelector('.scale__control--value');
 
 const pristine = new Pristine(uploadForm, {
   classTo: 'img-upload__field-wrapper',
@@ -70,6 +72,8 @@ const resetForm = () => {
 const openEditingWindow = () => {
   editingWindowElement.classList.remove('hidden');
   document.body.classList.add('modal-open');
+  addEventListenerToScaleElements();
+  addFilter();
 };
 
 const stopPropagation = (event) => event.stopPropagation();
@@ -80,6 +84,9 @@ const closeEditingWindow = () => {
   resetForm();
   // eslint-disable-next-line no-use-before-define
   addEventListeners(false);
+  removeEventListenerFromScaleElements();
+  removeFilter();
+  scaleImageValueElement.value = '100%';
 };
 
 const onDocumentKeydown = (evt) => {
