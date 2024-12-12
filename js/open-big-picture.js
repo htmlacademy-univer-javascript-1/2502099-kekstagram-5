@@ -57,11 +57,17 @@ const onDocumentKeydown = (evt) => {
     closeBigPicture();
   }
 };
+// eslint-disable-next-line no-use-before-define
+const onCloseElementClick = () => closeBigPicture();
+const onCommentsLoaderElementClick = () => showComments();
+
 const openBigPicture = (picture) => {
   bigPictureElement.classList.remove('hidden');
   document.body.classList.add('modal-open');
   document.addEventListener('keydown', onDocumentKeydown);
   bigPictureCommentsLoaderElement.classList.remove('hidden');
+  bigPictureClose.addEventListener('click', onCloseElementClick);
+  bigPictureCommentsLoaderElement.addEventListener('click', onCommentsLoaderElementClick);
   currentPicture = picture;
   changeBigPicture();
 };
@@ -76,6 +82,8 @@ const closeBigPicture = () => {
   document.body.classList.remove('modal-open');
   document.removeEventListener('keydown', onDocumentKeydown);
   bigPictureCommentsLoaderElement.classList.add('hidden');
+  bigPictureClose.removeEventListener('click', onCloseElementClick);
+  bigPictureCommentsLoaderElement.removeEventListener('click', onCommentsLoaderElementClick);
   currentCommentsCount = 0;
 };
 

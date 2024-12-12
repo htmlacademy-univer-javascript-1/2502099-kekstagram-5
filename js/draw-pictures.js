@@ -1,7 +1,16 @@
 
+import {openBigPicture} from './open-big-picture.js';
 
 const picturesListElement = document.querySelector('.pictures');
 const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
+
+const getPictureClickHandler = (pictures) => (evt) => {
+  const pictureElement = evt.target.closest('.picture');
+  if (pictureElement) {
+    const picture = pictures.find((pic) => pic.url === pictureElement.querySelector('.picture__img').getAttribute('src'));
+    openBigPicture(picture);
+  }
+};
 
 const renderPicturesList = (pictures) => {
   const picturesListFragment = document.createDocumentFragment();
@@ -17,6 +26,7 @@ const renderPicturesList = (pictures) => {
   });
 
   picturesListElement.appendChild(picturesListFragment);
+  picturesListElement.addEventListener('click', getPictureClickHandler(pictures));
 };
 
 export {renderPicturesList};

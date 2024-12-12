@@ -1,16 +1,7 @@
 import {renderPicturesList} from './draw-pictures.js';
-import {openBigPicture} from './open-big-picture.js';
-import {createPhotos} from './data.js';
+import {getData} from './server_data.js';
+import { showAlert } from './util.js';
 
-const pictures = createPhotos();
-renderPicturesList(pictures);
-
-const onClickPicture = (evt) => {
-  const pictureElement = evt.target.closest('.picture');
-  if (pictureElement) {
-    const picture = pictures.find((pic) => pic.url === pictureElement.querySelector('.picture__img').getAttribute('src'));
-    openBigPicture(picture);
-  }
-};
-
-document.querySelector('.pictures').addEventListener('click', onClickPicture);
+getData()
+  .then((pictures) => renderPicturesList(pictures))
+  .catch((err) => showAlert(err.message));
