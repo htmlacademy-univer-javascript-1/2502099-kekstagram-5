@@ -1,5 +1,5 @@
-import { renderPicturesList } from './draw-pictures.js';
-import { getData } from './server_data.js';
+import {renderPicturesList} from './draw-pictures.js';
+import {getData} from './server_data.js';
 import { showAlert, generateArrayRandomSample, debounceFunction} from './util.js';
 
 const TIMEOUT_DELAY = 500;
