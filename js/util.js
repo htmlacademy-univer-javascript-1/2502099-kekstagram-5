@@ -32,7 +32,7 @@ const showAlert = (message) => {
   }, ALERT_TIME);
 };
 
-const getArrayRandomSample = (array, sampleSize) => {
+const generateArrayRandomSample = (array, sampleSize) => {
   if (array.length <= sampleSize) {
     return array.slice();
   }
@@ -55,4 +55,4 @@ const debounceFunction = (func, delay = 500) => {
   };
 };
 
-export {checkRepeats, isEscapeKey, showAlert, getArrayRandomSample, debounceFunction };
+export {checkRepeats, isEscapeKey, showAlert, generateArrayRandomSample, debounceFunction };
