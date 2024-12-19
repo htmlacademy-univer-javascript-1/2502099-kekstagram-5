@@ -1,5 +1,11 @@
 const ALERT_TIME = 5000;
 
+const generateRandomInteger = (min, max) => {
+  const lowerBound = Math.ceil(Math.min(min, max));
+  const upperBound = Math.floor(Math.max(min, max));
+  return Math.floor(Math.random() * (upperBound - lowerBound + 1) + lowerBound);
+};
+
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
 const checkRepeats = (arr) => {
@@ -26,4 +32,27 @@ const showAlert = (message) => {
   }, ALERT_TIME);
 };
 
-export {checkRepeats, isEscapeKey, showAlert};
+const generateArrayRandomSample = (array, sampleSize) => {
+  if (array.length <= sampleSize) {
+    return array.slice();
+  }
+
+  const temporaryArray = array.slice();
+  const sample = [];
+  while (sample.length < sampleSize) {
+    const randomIndex = generateRandomInteger(0, temporaryArray.length - 1);
+    sample.push(temporaryArray[randomIndex]);
+    temporaryArray.splice(randomIndex, 1);
+  }
+  return sample;
+};
+
+const debounceFunction = (func, delay = 500) => {
+  let timerId;
+  return (...params) => {
+    clearTimeout(timerId);
+    timerId = setTimeout(() => func(...params), delay);
+  };
+};
+
+export {checkRepeats, isEscapeKey, showAlert, generateArrayRandomSample, debounceFunction };
