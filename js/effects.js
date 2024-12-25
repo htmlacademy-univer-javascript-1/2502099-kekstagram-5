@@ -1,119 +1,105 @@
-const MIN_SCALE = 25;
-const MAX_SCALE = 100;
-const STEP = 25;
+const CLASS_HIDDEN = 'hidden';
 
-const zoomOutElement = document.querySelector('.scale__control--smaller');
-const zoomInElement = document.querySelector('.scale__control--bigger');
-const scaleValueElement = document.querySelector('.scale__control--value');
-const imageElement = document.querySelector('.img-upload__preview img');
-const filtersContainerElement = document.querySelector('.effects__list');
-const sliderElementContainer = document.querySelector('.img-upload__effect-level');
-const sliderElement = sliderElementContainer.querySelector('.effect-level__slider');
-const filterValueElement = sliderElementContainer.querySelector('.effect-level__value');
-let filterType ;
+const imagePreviewElement = document.querySelector('.img-upload__preview img');
+const effectsListElement = document.querySelector('.effects__list');
+const sliderContainerElement = document.querySelector('.img-upload__effect-level');
+const sliderElement = sliderContainerElement.querySelector('.effect-level__slider');
+const effectValueElement = sliderContainerElement.querySelector('.effect-level__value');
 
-const changeImageScale = (delta) => {
-  const scaleValue = parseInt(scaleValueElement.value, 10);
-  const newScaleValue = scaleValue + delta;
-
-  if (newScaleValue >= MIN_SCALE && newScaleValue <= MAX_SCALE) {
-    scaleValueElement.value = newScaleValue.toString();
-    imageElement.style.transform = `scale(${newScaleValue / 100})`;
-  }
+const EffectConfigurations = {
+  NONE: {
+    id: 'effect-none',
+    type: 'none',
+    params: { min: 0, max: 1, step: 0.1 },
+    format: (value) => value,
+    parse: (value) => parseFloat(value),
+  },
+  CHROME: {
+    id: 'effect-chrome',
+    type: 'grayscale',
+    params: { min: 0, max: 1, step: 0.1 },
+    format: (value) => value.toFixed(1),
+    parse: (value) => parseFloat(value),
+  },
+  SEPIA: {
+    id: 'effect-sepia',
+    type: 'sepia',
+    params: { min: 0, max: 1, step: 0.1 },
+    format: (value) => value.toFixed(1),
+    parse: (value) => parseFloat(value),
+  },
+  INVERT: {
+    id: 'effect-marvin',
+    type: 'invert',
+    params: { min: 0, max: 100, step: 1 },
+    format: (value) => `${value}%`,
+    parse: (value) => parseFloat(value),
+  },
+  BLUR: {
+    id: 'effect-phobos',
+    type: 'blur',
+    params: { min: 0, max: 3, step: 0.1 },
+    format: (value) => `${value.toFixed(1)}px`,
+    parse: (value) => parseFloat(value),
+  },
+  BRIGHTNESS: {
+    id: 'effect-heat',
+    type: 'brightness',
+    params: { min: 1, max: 3, step: 0.1 },
+    format: (value) => value.toFixed(1),
+    parse: (value) => parseFloat(value),
+  },
 };
 
-const zoomOutImage = () => changeImageScale(-STEP);
-const zoomInImage = () => changeImageScale(STEP);
+let activeEffect = EffectConfigurations.NONE;
 
-const addEventListenerToScaleElements = () => {
-  zoomOutElement.addEventListener('click', zoomOutImage);
-  zoomInElement.addEventListener('click', zoomInImage);
-};
-
-const removeEventListenerFromScaleElements = () => {
-  zoomOutElement.removeEventListener('click', zoomOutImage);
-  zoomInElement.removeEventListener('click', zoomInImage);
-};
-
-const getEffectOptions = (min, max, step, funcTo, funcFrom) => ({
-  range: {min, max},
-  start: max,
-  step,
+const getSliderOptions = ({ params, format, parse }) => ({
+  range: {
+    min: params.min,
+    max: params.max,
+  },
+  start: params.max,
+  step: params.step,
   connect: 'lower',
-  format: {to: funcTo,from: funcFrom}
+  format: { to: format, from: parse },
 });
 
-const changeFilter = (filterID) => {
-  let filterClass;
-  let effectOptions;
-  switch (filterID) {
-    case 'effect-none':
-      sliderElementContainer.setAttribute('hidden', true);
-      filterClass = 'effects__preview--none';
-      filterType = 'none';
-      effectOptions = getEffectOptions(0, 1, 0.1, (value) => value, Number);
-      break;
-    case 'effect-chrome':
-      sliderElementContainer.removeAttribute('hidden');
-      filterClass = 'effects__preview--chrome';
-      filterType = 'grayscale';
-      effectOptions = getEffectOptions(0, 1, 0.1, (value) => value.toFixed(1), Number);
-      break;
-    case 'effect-sepia':
-      sliderElementContainer.removeAttribute('hidden');
-      filterClass = 'effects__preview--sepia';
-      filterType = 'sepia';
-      effectOptions = getEffectOptions(0, 1, 0.1, (value) => value.toFixed(1), Number);
-      break;
-    case 'effect-marvin':
-      sliderElementContainer.removeAttribute('hidden');
-      filterClass = 'effects__preview--marvin';
-      filterType = 'invert';
-      effectOptions = getEffectOptions(0, 100, 1, (value) => `${value}%`, Number);
-      break;
-    case 'effect-phobos':
-      sliderElementContainer.removeAttribute('hidden');
-      filterClass = 'effects__preview--phobos';
-      filterType = 'blur';
-      effectOptions = getEffectOptions(0, 3, 0.1, (value) => `${value.toFixed(1)}px`, Number);
-      break;
-    case 'effect-heat':
-      sliderElementContainer.removeAttribute('hidden');
-      filterClass = 'effects__preview--heat';
-      filterType = 'brightness';
-      effectOptions = getEffectOptions(1, 3, 0.1, (value) => value.toFixed(1), Number);
-      break;
+const updateEffectParams = (effect) => {
+  if (effect.type === 'none') {
+    sliderContainerElement.classList.add(CLASS_HIDDEN);
+  } else {
+    sliderContainerElement.classList.remove(CLASS_HIDDEN);
   }
 
-  imageElement.className = '';
-  imageElement.classList.add(filterClass);
-  sliderElement.noUiSlider.updateOptions(effectOptions);
+  activeEffect = effect;
+  sliderElement.noUiSlider.updateOptions(getSliderOptions(effect));
 };
 
-const onfilterChange = (evt) => {
-  if (evt.target.closest('.effects__item')) {
-    changeFilter(evt.target.id);
+const handleEffectChange = (evt) => {
+  const selectedEffect = Object.values(EffectConfigurations).find((config) => config.id === evt.target.id);
+  if (selectedEffect) {
+    updateEffectParams(selectedEffect);
   }
 };
 
-const addFilter = () => {
-  filterValueElement.value = 1;
-  noUiSlider.create(sliderElement, getEffectOptions(0, 1, 0.1, (value) => value, Number));
-  sliderElementContainer.setAttribute('hidden', true);
-  filtersContainerElement.addEventListener('change', onfilterChange);
+const initializeEffects = () => {
+  activeEffect = EffectConfigurations.NONE;
+  effectValueElement.value = activeEffect.params.max;
+  noUiSlider.create(sliderElement, getSliderOptions(activeEffect));
+  sliderContainerElement.classList.add(CLASS_HIDDEN);
+  effectsListElement.addEventListener('change', handleEffectChange);
 
   sliderElement.noUiSlider.on('update', () => {
-    filterValueElement.value = parseFloat(sliderElement.noUiSlider.get());
-    imageElement.style.filter = (filterType !== 'none') ? `${filterType}(${sliderElement.noUiSlider.get()})` : '';
+    effectValueElement.value = parseFloat(sliderElement.noUiSlider.get());
+    imagePreviewElement.style.filter = (activeEffect.type !== 'none') ? `${activeEffect.type}(${sliderElement.noUiSlider.get()})` : '';
   });
 };
 
-const removeFilter = () => {
-  filtersContainerElement.removeEventListener('change', onfilterChange);
-  imageElement.className = '';
-  imageElement.style.transform = 'scale(1)';
-  document.getElementById('effect-none').checked = true;
+const clearEffects = () => {
+  effectsListElement.removeEventListener('change', handleEffectChange);
+  document.getElementById(EffectConfigurations.NONE.id).checked = true;
+  imagePreviewElement.style.filter = '';
   sliderElement.noUiSlider.destroy();
 };
 
-export {addEventListenerToScaleElements, removeEventListenerFromScaleElements, addFilter, removeFilter };
+export { initializeEffects, clearEffects };

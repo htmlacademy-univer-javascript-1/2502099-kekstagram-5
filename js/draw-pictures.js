@@ -1,32 +1,34 @@
+import { openBigPictureModal } from './open-big-picture.js';
 
-import {openBigPicture} from './open-big-picture.js';
+const picturesContainerElement = document.querySelector('.pictures');
+const pictureTemplateElement = document.getElementById('picture').content.querySelector('.picture');
 
-const picturesListElement = document.querySelector('.pictures');
-const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
+let displayedPictures = [];
 
-const getPictureClickHandler = (pictures) => (evt) => {
-  const pictureElement = evt.target.closest('.picture');
-  if (pictureElement) {
-    const picture = pictures.find((pic) => pic.url === pictureElement.querySelector('.picture__img').getAttribute('src'));
-    openBigPicture(picture);
-  }
-};
+const renderPictures = (pictures) => {
+  displayedPictures = pictures;
+  const picturesFragment = document.createDocumentFragment();
 
-const renderPicturesList = (pictures) => {
-  const picturesListFragment = document.createDocumentFragment();
-
-  pictures.forEach(({url, description, likes, comments}) => {
-    const pictureElement = pictureTemplate.cloneNode(true);
-    const pictureImage = pictureElement.querySelector('.picture__img');
-    pictureImage.src = url;
-    pictureImage.alt = description;
+  pictures.forEach(({ url, description, likes, comments }) => {
+    const pictureElement = pictureTemplateElement.cloneNode(true);
+    const pictureImageElement = pictureElement.querySelector('.picture__img');
+    pictureImageElement.src = url;
+    pictureImageElement.alt = description;
     pictureElement.querySelector('.picture__likes').textContent = likes;
     pictureElement.querySelector('.picture__comments').textContent = comments.length;
-    picturesListFragment.appendChild(pictureElement);
+    picturesFragment.appendChild(pictureElement);
   });
 
-  picturesListElement.appendChild(picturesListFragment);
-  picturesListElement.addEventListener('click', getPictureClickHandler(pictures));
+  picturesContainerElement.querySelectorAll('.picture').forEach((picture) => picture.remove());
+  picturesContainerElement.appendChild(picturesFragment);
 };
 
-export {renderPicturesList};
+picturesContainerElement.addEventListener('click', (evt) => {
+  const clickedPictureElement = evt.target.closest('.picture');
+  if (clickedPictureElement) {
+    const picture = displayedPictures.find((pic) => pic.url === clickedPictureElement.querySelector('.picture__img').getAttribute('src'));
+    openBigPictureModal(picture);
+  }
+});
+
+export { renderPictures };
