@@ -29,16 +29,20 @@ const applyFilterToPictures = (pictures) => {
 getData()
   .then((pictures) => {
     renderPictures(pictures);
-    const handleFilterButtonClick = debounceFunction((event) => {
+    const handleFilterButtonClick = (event) => {
       if (event.target.classList.contains('img-filters__button')) {
         currentFilterButton.classList.remove(ACTIVE_FILTER_CLASS);
         currentFilterId = event.target.id;
         currentFilterButton = event.target;
         currentFilterButton.classList.add(ACTIVE_FILTER_CLASS);
-        renderPictures(applyFilterToPictures(pictures));
+        debounceFunction(() => {
+          renderPictures(applyFilterToPictures(pictures));
+        }, DEBOUNCE_DELAY)();
       }
-    }, DEBOUNCE_DELAY);
+    };
+
     filtersContainer.addEventListener('click', handleFilterButtonClick);
     filtersContainer.classList.remove('img-filters--inactive');
   })
   .catch((error) => displayAlert(error.message));
+
