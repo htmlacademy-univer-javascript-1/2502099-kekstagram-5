@@ -13,17 +13,17 @@ const MAX_HASHTAGS = 5;
 const HASHTAG_PATTERN = /^#[A-Za-zА-Яа-я0-9]{1,19}$/;
 const PRISTINE_ERROR_CLASS = 'upload-form__error-text';
 
-const uploadForm = document.getElementById('upload-select-image');
-const imagePreview = uploadForm.querySelector('.img-upload__preview img');
-const effectsPreviews = uploadForm.querySelectorAll('.effects__preview');
-const imageInput = uploadForm.querySelector('.img-upload__input');
-const editingForm = uploadForm.querySelector('.img-upload__overlay');
-const closeFormButton = editingForm.querySelector('.img-upload__cancel');
-const submitButton = editingForm.querySelector('.img-upload__submit');
-const hashtagsInput = uploadForm.querySelector('.text__hashtags');
-const descriptionInput = uploadForm.querySelector('.text__description');
+const uploadFormElement = document.querySelector('upload-select-image');
+const imagePreviewElement = uploadFormElement.querySelector('.img-upload__preview img');
+const effectsPreviewsElement = uploadFormElement.querySelectorAll('.effects__preview');
+const imageInputElement = uploadFormElement.querySelector('.img-upload__input');
+const editingFormElement = uploadFormElement.querySelector('.img-upload__overlay');
+const closeFormButtonElement = editingFormElement.querySelector('.img-upload__cancel');
+const submitButtonElement = editingFormElement.querySelector('.img-upload__submit');
+const hashtagsInputElement = uploadFormElement.querySelector('.text__hashtags');
+const descriptionInputElement = uploadFormElement.querySelector('.text__description');
 
-const pristine = new Pristine(uploadForm, {
+const pristine = new Pristine(uploadFormElement, {
   classTo: 'img-upload__field-wrapper',
   errorTextParent: 'img-upload__field-wrapper',
   errorTextTag: 'div',
@@ -60,33 +60,33 @@ const isHashtagValid = (hashtagString) => {
   return true;
 };
 
-const handleFormInput = () => {
-  submitButton.disabled = !pristine.validate();
+const formInputHandler = () => {
+  submitButtonElement.disabled = !pristine.validate();
 };
 
 const isDescriptionValid = (descriptionString) => descriptionString.length <= MAX_COMMENT_LENGTH;
 
 const getHashtagErrorMessage = () => hashtagErrorMessage;
 
-pristine.addValidator(hashtagsInput, isHashtagValid, getHashtagErrorMessage);
-pristine.addValidator(descriptionInput, isDescriptionValid, `Длина комментария не может составлять больше ${MAX_COMMENT_LENGTH} символов!`);
+pristine.addValidator(hashtagsInputElement, isHashtagValid, getHashtagErrorMessage);
+pristine.addValidator(descriptionInputElement, isDescriptionValid, `Длина комментария не может составлять больше ${MAX_COMMENT_LENGTH} символов!`);
 
-const handleDocumentKeydown = (evt) => {
-  if (isKeyEscape(evt) && evt.target !== hashtagsInput && evt.target !== descriptionInput) {
+const documentKeydownHandler = (evt) => {
+  if (isKeyEscape(evt) && evt.target !== hashtagsInputElement && evt.target !== descriptionInputElement) {
     closeEditingForm();
   }
 };
 
-const handleCloseFormButtonClick = () => closeEditingForm();
+const closeFormButtonClickHandler = () => closeEditingForm();
 
 function closeEditingForm() {
-  editingForm.classList.add(CLASS_HIDDEN);
+  editingFormElement.classList.add(CLASS_HIDDEN);
   document.body.classList.remove(CLASS_MODAL_OPEN);
 
-  submitButton.disabled = false;
-  imageInput.value = '';
-  imagePreview.src = DEFAULT_IMAGE_PATH;
-  effectsPreviews.forEach((preview) => {
+  submitButtonElement.disabled = false;
+  imageInputElement.value = '';
+  imagePreviewElement.src = DEFAULT_IMAGE_PATH;
+  effectsPreviewsElement.forEach((preview) => {
     preview.style.removeProperty(STYLE_BACKGROUND_IMAGE);
   });
 
@@ -94,22 +94,22 @@ function closeEditingForm() {
   resetPreviewImageZoom();
   removeZoomEventListeners();
 
-  closeFormButton.removeEventListener('click', handleCloseFormButtonClick);
-  document.removeEventListener('keydown', handleDocumentKeydown);
-  hashtagsInput.removeEventListener('input', handleFormInput);
-  descriptionInput.removeEventListener('input', handleFormInput);
+  closeFormButtonElement.removeEventListener('click', closeFormButtonClickHandler);
+  document.removeEventListener('keydown', documentKeydownHandler);
+  hashtagsInputElement.removeEventListener('input', formInputHandler);
+  descriptionInputElement.removeEventListener('input', formInputHandler);
 
-  uploadForm.reset();
+  uploadFormElement.reset();
   pristine.reset();
 }
 
 const openEditingForm = () => {
-  const imageFile = imageInput.files[0];
+  const imageFile = imageInputElement.files[0];
 
   if (ALLOWED_FILE_FORMATS.some((format) => imageFile.name.toLowerCase().endsWith(format))) {
     const imageURL = URL.createObjectURL(imageFile);
-    imagePreview.src = imageURL;
-    effectsPreviews.forEach((preview) => {
+    imagePreviewElement.src = imageURL;
+    effectsPreviewsElement.forEach((preview) => {
       preview.style.backgroundImage = `url('${imageURL}')`;
     });
   }
@@ -117,17 +117,17 @@ const openEditingForm = () => {
   initializeEffects();
   addZoomEventListeners();
 
-  closeFormButton.addEventListener('click', handleCloseFormButtonClick);
-  document.addEventListener('keydown', handleDocumentKeydown);
-  hashtagsInput.addEventListener('input', handleFormInput);
-  descriptionInput.addEventListener('input', handleFormInput);
+  closeFormButtonElement.addEventListener('click', closeFormButtonClickHandler);
+  document.addEventListener('keydown', documentKeydownHandler);
+  hashtagsInputElement.addEventListener('input', formInputHandler);
+  descriptionInputElement.addEventListener('input', formInputHandler);
 
   document.body.classList.add(CLASS_MODAL_OPEN);
-  editingForm.classList.remove(CLASS_HIDDEN);
+  editingFormElement.classList.remove(CLASS_HIDDEN);
 };
 
-const handleImageInputChange = () => openEditingForm();
+const imageInputChangeHandler = () => openEditingForm();
 
-imageInput.addEventListener('change', handleImageInputChange);
+imageInputElement.addEventListener('change', imageInputChangeHandler);
 
-export { closeEditingForm, handleDocumentKeydown };
+export { closeEditingForm, documentKeydownHandler };
