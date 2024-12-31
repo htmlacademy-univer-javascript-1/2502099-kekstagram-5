@@ -8,10 +8,10 @@ const ACTIVE_FILTER_CLASS = 'img-filters__button--active';
 const DEFAULT_FILTER_ID = 'filter-default';
 const RANDOM_FILTER_ID = 'filter-random';
 const DISCUSSED_FILTER_ID = 'filter-discussed';
-const filtersContainer = document.querySelector('.img-filters');
+const filtersContainerElement = document.querySelector('.img-filters');
 
 let currentFilterId = DEFAULT_FILTER_ID;
-let currentFilterButton = document.getElementById(DEFAULT_FILTER_ID);
+let currentFilterButton = document.querySelector(DEFAULT_FILTER_ID);
 
 const applyFilterToPictures = (pictures) => {
   switch (currentFilterId) {
@@ -29,7 +29,7 @@ const applyFilterToPictures = (pictures) => {
 getData()
   .then((pictures) => {
     renderPictures(pictures);
-    const handleFilterButtonClick = (event) => {
+    const filterButtonClickHandler = (event) => {
       if (event.target.classList.contains('img-filters__button')) {
         currentFilterButton.classList.remove(ACTIVE_FILTER_CLASS);
         currentFilterId = event.target.id;
@@ -41,7 +41,7 @@ getData()
       }
     };
 
-    filtersContainer.addEventListener('click', handleFilterButtonClick);
-    filtersContainer.classList.remove('img-filters--inactive');
+    filtersContainerElement.addEventListener('click', filterButtonClickHandler);
+    filtersContainerElement.classList.remove('img-filters--inactive');
   })
   .catch((error) => displayAlert(error.message));
